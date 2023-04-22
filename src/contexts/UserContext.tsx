@@ -6,7 +6,7 @@ interface UserContextType {
 }
 
 const defaultUserState = {
-    isUserLogged: true
+    isUserLogged: false
 }
 
 const UserContext = createContext<UserContextType>(defaultUserState);
@@ -16,7 +16,6 @@ const UserProvider = ({ children }: { children: ReactNode }) => {
     const [isUserLogged, setIsUserLogged] = useState(defaultUserState.isUserLogged)
     const toggleUserState = () => {
         setIsUserLogged(!isUserLogged)
-        console.log('isUserLogged :>> ', isUserLogged);
     }
 
     return (
