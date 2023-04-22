@@ -6,7 +6,7 @@ interface UserContextType {
 }
 
 const defaultUserState = {
-    isUserLogged: true
+    isUserLogged: false
 }
 
 const UserContext = createContext<UserContextType>(defaultUserState);

@@ -1,3 +1,5 @@
+@import "../styles/mixins.scss";
+
 .mainContentNotLogged {
     display: flex;
     flex-direction: column;
@@ -6,6 +8,10 @@
     max-width: 481px;
     margin-top: 80px;
     margin-bottom: 70px;
+
+    @include tablet {
+        margin-top: 60px;
+    }
 }
 
 .mainContentRegister {
@@ -25,6 +31,11 @@
     display: flex;
     width: 100%;
     column-gap: 24px;
+
+    @include tablet {
+        flex-direction: column;
+        column-gap: initial;
+    }
 }
 
 .link {
@@ -34,6 +45,11 @@
 
     &BackToLogin {
         display: none;
+        
+        @include tablet {
+            margin-top: 24px;
+            display: flex;
+        }
     }
 }
 
@@ -41,6 +57,10 @@
     position: absolute;
     right: 0;
     top: 0;
+
+    @include tablet {
+        display: none;
+    }
 }
 
 .mainTitle {
@@ -51,6 +71,14 @@
     margin-bottom: 70px;
     text-align: center;
     line-height: 75px;
+
+    @include tablet {
+        text-transform: initial;
+        letter-spacing: initial;
+        font-size: 2rem;
+        margin-bottom: 50px;
+        line-height: normal;
+    }
 }
 
 .complementTextBttn {
@@ -72,6 +100,10 @@
 .mainContentRegister {
     .generalFieldset {
         margin: 0 0 40px 0;
+
+        @include tablet {
+            margin: 0 0 24px 0;
+        }
     }
 }
 
@@ -117,40 +149,4 @@
     top: 50%;
     transform: translateY(-50%);
     cursor: pointer;
-}
-
-@media (max-width: 1024px) {
-    .ring {
-        display: none;
-    }
-
-    .link {
-        &BackToLogin {
-            margin-top: 24px;
-            display: flex;
-        }
-    }
-
-    .mainTitle {
-        text-transform: initial;
-        letter-spacing: initial;
-        font-size: 2rem;
-        margin-bottom: 50px;
-        line-height: normal;
-    }
-
-    .mainContentNotLogged {
-        margin-top: 60px;
-    }
-
-    .formHorizontalContainer {
-        flex-direction: column;
-        column-gap: initial;
-    }
-
-    .mainContentRegister {
-        .generalFieldset {
-            margin: 0 0 24px 0;
-        }
-    }
 }

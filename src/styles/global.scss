@@ -1,3 +1,5 @@
+@import './mixins.scss';
+
 :root {
   font-family: Raleway, system-ui, Avenir, Helvetica, Arial, sans-serif !important;
   line-height: normal;
@@ -26,7 +28,7 @@ a {
   text-decoration: inherit;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1, h2, h3, h4, h5, h6, p {
   margin: 0;
 }
 
@@ -50,7 +52,16 @@ h1 {
   padding: 0 44.5px;
   min-height: 100vh;
   background-color: #030446;
+
   &UserLogged {
-  background-color: #000004;  
+    background-color: #0F0F0F;  
+    background-image: url("../assets/stars.svg");
+    background-size: contain;
+    background-repeat: no-repeat;
+
+    @include tablet {
+      padding: 0;
+      background-color: #000004;  
+    }
   }
 }
