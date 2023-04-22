@@ -7,9 +7,12 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import { UserProvider, UserContext } from "./contexts/UserContext"
 import { useContext } from 'react'
 
-import "@fontsource/raleway/600.css"
+import "@fontsource/raleway/300.css"
+import "@fontsource/raleway/300-italic.css"
 import "@fontsource/raleway/500.css"
+import "@fontsource/raleway/600.css"
 import "@fontsource/raleway/700.css"
+import "@fontsource/raleway/700-italic.css"
 import ConfirmEmailPage from "./pages/confirm-email/confirm-email"
 import MyAccountPage from "./pages/my-account/my-account"
 
