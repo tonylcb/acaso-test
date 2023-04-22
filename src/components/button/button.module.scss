@@ -1,0 +1,23 @@
+.generalButton {
+    width: 100%;
+    max-width: 328px;
+    height: 58px;
+    border: none;
+    background-color: rgba(255,255,255,.1);
+    font-weight: 700;
+    color: #fff;
+    border-radius: 100px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: 0.2s;
+    padding: 0 15px;
+}
+
+.generalButton:hover {
+    transform: scale(1.05);
+}
+
+.whiteBg {
+    background-color: #fff;
+    color: #000004;
+}

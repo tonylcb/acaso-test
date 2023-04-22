@@ -1,0 +1,156 @@
+.mainContentNotLogged {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 481px;
+    margin-top: 80px;
+    margin-bottom: 70px;
+}
+
+.mainContentRegister {
+    .complementTextBttn {
+        margin-top: 0px;
+    }
+}
+
+.form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.formHorizontalContainer {
+    display: flex;
+    width: 100%;
+    column-gap: 24px;
+}
+
+.link {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+
+    &BackToLogin {
+        display: none;
+    }
+}
+
+.ring {
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.mainTitle {
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 14px;
+    font-size: 3.125rem;
+    margin-bottom: 70px;
+    text-align: center;
+    line-height: 75px;
+}
+
+.complementTextBttn {
+    margin-top: 40px;
+    margin-bottom: 8px;
+}
+
+// FIELDSET
+
+.generalFieldset {
+    border: none;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    width: 100%;
+    margin: 0 0 24px 0;
+}
+
+.mainContentRegister {
+    .generalFieldset {
+        margin: 0 0 40px 0;
+    }
+}
+
+.generalLabel {
+    font-weight: 500;
+    margin-bottom: 8px;
+    padding-left: 22px;
+}
+
+.generalInput {
+    background-color: #1E1F2F;
+    color: #F6F6F6;
+    border-radius: 7px;
+    height: 50px;
+    padding-left: 22px;
+    outline: none;
+    width: 100%;
+    border-width: 1px;
+    border-color: transparent;
+}
+
+.generalInput::placeholder {
+    color: #F6F6F6;
+    opacity: 0.5;
+    font-family: "Raleway";
+}
+
+.generalInput:focus {
+    border: 1px solid #8e8f97;
+}
+
+.inputPasswordContainer {
+    position: relative;
+
+    input {
+        padding-right: 45px;
+    }
+}
+
+.inputPasswordEye {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
+@media (max-width: 1024px) {
+    .ring {
+        display: none;
+    }
+
+    .link {
+        &BackToLogin {
+            margin-top: 24px;
+            display: flex;
+        }
+    }
+
+    .mainTitle {
+        text-transform: initial;
+        letter-spacing: initial;
+        font-size: 2rem;
+        margin-bottom: 50px;
+        line-height: normal;
+    }
+
+    .mainContentNotLogged {
+        margin-top: 60px;
+    }
+
+    .formHorizontalContainer {
+        flex-direction: column;
+        column-gap: initial;
+    }
+
+    .mainContentRegister {
+        .generalFieldset {
+            margin: 0 0 24px 0;
+        }
+    }
+}
