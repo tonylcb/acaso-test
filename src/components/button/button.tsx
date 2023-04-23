@@ -7,9 +7,9 @@ interface ButtonBaseProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 
-const Button: FC<ButtonBaseProps> = ({ text, isWhiteBg }) => {
+const Button: FC<ButtonBaseProps> = ({ text, isWhiteBg, ...props }) => {
     return (
-        <button className={`${isWhiteBg && style.whiteBg} ${style.generalButton}`}>{text}</button>
+        <button className={`${isWhiteBg && style.whiteBg} ${style.generalButton}`} {...props}>{text}</button>
     )
 }
 
