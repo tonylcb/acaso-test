@@ -1,86 +1,32 @@
-import { useState } from 'react'
+import { useContext } from 'react'
 import Button from '../../components/button/button'
 import Fieldset from '../../components/fieldset/fieldset'
 import style from '../../styles/user-not-logged.module.scss'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup';
 import { confirmEmailSchema, ConfirmEmailFormDataTypes } from '../../validations/FormValidations'
-import { useNavigate } from 'react-router-dom'
-import axios from 'axios';
+import { UserContext } from '../../contexts/UserContext'
 
 interface RegisterTypes {
     code: string,
 }
 
-function ConfirmEmailPage() {
+function ConfirmRegisterPage() {
     const { register, handleSubmit, formState: { errors } } = useForm<ConfirmEmailFormDataTypes>({
         resolver: yupResolver(confirmEmailSchema)
     });
 
-    const navigate = useNavigate()
-
-    const [isloading, setIsLoading] = useState<boolean>(false)
-    const [isResendloading, setIsResendLoading] = useState<boolean>(false)
-    const [successRequest, setSuccessRequest] = useState<boolean>(false)
-    const [successResendRequest, setSuccessResendRequest] = useState<boolean>(false)
-    const [requestError, setRequestError] = useState<string>('')
-
-    const baseURL = 'https://api.staging.aca.so'
-    const registerEmail = localStorage.getItem("email")
+    const { confirmSignUpRequest, resendCodeRequest, isloading, isResendloading, successRequest, successResendRequest, requestError } = useContext(UserContext)
 
     const onSubmit = async (registerData: RegisterTypes) => {
         const isValid = await confirmEmailSchema.isValid(registerData)
         if (isValid) {
-            await axios.post(`${baseURL}/auth/confirm-sign-up`,
-                {
-                    email: registerEmail,
-                    confirmation_code: registerData.code
-                },
-                {
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                }).then((response) => {
-                    setSuccessRequest(true)
-                    console.log('responseEmail :>> ', response);
-                    setRequestError('')
-
-                    setTimeout(() => {
-                        navigate("/")
-                    }, 3000)
-                }).catch((err) => {
-                    console.log('err :>> ', err);
-                    setRequestError('Erro no servidor')
-                    setIsLoading(false)
-                    setSuccessRequest(false)
-                }).finally(() => {
-                    setIsLoading(false)
-                })
-        } else {
-            setIsLoading(false)
+            confirmSignUpRequest?.(registerData)
         }
     };
 
-    const resendCode = async () => {
-        await axios.post(`${baseURL}/auth/resend-confirmation-code`,
-            {
-                email: registerEmail,
-            },
-            {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }).then((response) => {
-                setSuccessResendRequest(true)
-                console.log('responseEmail :>> ', response);
-                setRequestError('')
-            }).catch((err) => {
-                console.log('err :>> ', err);
-                setRequestError('Erro no servidor')
-                setIsResendLoading(false)
-            }).finally(() => {
-                setIsResendLoading(false)
-            })
+    const resendCode = () => {
+        resendCodeRequest?.()
     }
 
     return (
@@ -119,4 +65,4 @@ function ConfirmEmailPage() {
     )
 }
 
-export default ConfirmEmailPage
+export default ConfirmRegisterPage

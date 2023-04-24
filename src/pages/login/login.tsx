@@ -1,12 +1,12 @@
-import { useContext, useState } from 'react'
+import { useContext } from 'react'
 import Button from '../../components/button/button'
 import Fieldset from '../../components/fieldset/fieldset'
 import style from '../../styles/user-not-logged.module.scss'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup';
 import { loginSchema, LoginFormDataTypes } from '../../validations/FormValidations'
-import axios from 'axios'
+import { UserContext } from '../../contexts/UserContext'
 
 interface LoginTypes {
     email: string,
@@ -17,51 +17,18 @@ function LoginPage() {
     const { register, handleSubmit, formState: { errors } } = useForm<LoginFormDataTypes>({
         resolver: yupResolver(loginSchema)
     });
-    const [isloading, setIsLoading] = useState<boolean>(false)
-    const [requestError, setRequestError] = useState<string>('')
 
-    const navigate = useNavigate()
+    const { fetchLogin, isloading, requestError } = useContext(UserContext)
 
-    const baseURL = 'https://api.staging.aca.so'
 
     const onSubmit = async (loginData: LoginTypes) => {
         const isValid = await loginSchema.isValid(loginData)
 
         if (isValid) {
-            setIsLoading(true)
-            await axios.post(`${baseURL}/auth/login`,
-                {
-                    email: loginData.email,
-                    password: loginData.password
-                },
-                {
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                }).then((response) => {
-                    console.log('response :>> ', response);
-                    setRequestError('')
-                    localStorage.setItem("is_user_logged", "true")
-                    localStorage.setItem("access_token", response.data.token.access_token)
-                    localStorage.setItem("id_token", response.data.token.id_token)
-                    localStorage.setItem("refresh_token", response.data.token.refresh_token)
-
-                    navigate("/minha-conta")
-                }).catch((error) => {
-                    console.log('error :>> ', error);
-                    if (error.response.status === 400) {
-                        setRequestError('E-mail ou senha incorreto')
-                    } else {
-                        setRequestError('Erro no servidor')
-                    }
-                    setIsLoading(false)
-                }).finally(() => {
-                    setIsLoading(false)
-                })
-        } else {
-            setIsLoading(false)
+            fetchLogin?.(loginData)
         }
     };
+
 
     return (
         <div className={style.mainContentNotLogged}>

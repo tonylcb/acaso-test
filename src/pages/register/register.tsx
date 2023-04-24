@@ -1,12 +1,11 @@
 import style from '../../styles/user-not-logged.module.scss'
 import Button from '../../components/button/button'
 import Fieldset from '../../components/fieldset/fieldset'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup';
 import { registerSchema, RegisterFormDataTypes } from '../../validations/FormValidations'
-import { useContext, useState } from 'react'
-import axios from 'axios';
+import { useContext } from 'react'
 import { UserContext } from '../../contexts/UserContext'
 
 interface RegisterTypes {
@@ -22,95 +21,16 @@ const RegisterPage = () => {
         resolver: yupResolver(registerSchema)
     });
 
-    // const { setCurrentUserEmail, setCurrentFirstName, setCurrentLastName } = useContext(UserContext)
+    const { signUpRequest, isloading, successRequest, requestError } = useContext(UserContext)
 
-    const [isloading, setIsLoading] = useState<boolean>(false)
-    const [successRequest, setSuccessRequest] = useState<boolean>(false)
-    const [token, setToken] = useState<object>()
-    const [requestError, setRequestError] = useState<string>('')
-
-    const navigate = useNavigate()
-
-    const baseURL = 'https://api.staging.aca.so'
+    // const navigate = useNavigate()
 
     const onSubmit = async (registerData: RegisterTypes) => {
-        setIsLoading(true)
-        setSuccessRequest(false)
         const isValid = await registerSchema.isValid(registerData)
         if (isValid) {
-            // setCurrentFirstName(registerData.firstName)
-            // setCurrentLastName(registerData.lastName)
-            // setCurrentUserEmail(registerData.email)
-
-            signUpRequest(registerData)
-        } else {
-            setIsLoading(false)
+            signUpRequest?.(registerData)
         }
     }
-
-    const signUpRequest = async (registerData: RegisterTypes) => {
-        localStorage.setItem("email", registerData.email)
-
-        await axios.post(`${baseURL}/auth/sign-up`,
-            {
-                email: registerData.email,
-                first_name: registerData.firstName,
-                last_name: registerData.lastName,
-                password: registerData.password
-            },
-            {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }).then((response) => {
-                setRequestError('')
-                setToken(response.data)
-                localStorage.setItem("authToken", response.data)
-                navigate("/confirmar-cadastro")
-            }).catch((err) => {
-                console.log('err :>> ', err);
-                if (err.response.status === 400) {
-                    setRequestError('E-mail já cadastrado, você será redirecionado')
-                    sendCodeRequest(registerData)
-                    setTimeout(() => {
-                        navigate('/confirmar-cadastro')
-                    }, 5000)
-                } else {
-                    setRequestError('Erro no servidor')
-                }
-                setIsLoading(false)
-                setSuccessRequest(false)
-            }).finally(() => {
-                setIsLoading(false)
-            })
-    }
-
-    const sendCodeRequest = async (registerData: RegisterTypes) => {
-        await axios.post(`${baseURL}/auth/resend-confirmation-code`,
-            {
-                email: registerData.email
-            },
-            {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }).then((response) => {
-                setSuccessRequest(true)
-
-                console.log('responseEmail :>> ', response);
-                setRequestError('')
-                navigate('/confirmar-cadastro')
-            }).catch((err) => {
-                console.log('err :>> ', err);
-                setRequestError('Erro no servidor')
-                setIsLoading(false)
-                setSuccessRequest(false)
-            }).finally(() => {
-                setIsLoading(false)
-            })
-    }
-
-
 
     return (
         <div className={`${style.mainContentNotLogged} ${style.mainContentRegister}`}>

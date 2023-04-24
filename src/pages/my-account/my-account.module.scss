@@ -1,5 +1,21 @@
 @import "../../styles/mixins.scss";
 
+.mainContainerUserLogged {
+  background-color: #0f0f0f;
+  background-image: url("../../assets/stars.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  @include tablet {
+    padding: 0;
+    background-color: #000004;
+  }
+}
+
 .mainContent {
   display: flex;
   align-items: center;
