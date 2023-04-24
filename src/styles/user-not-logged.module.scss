@@ -166,3 +166,18 @@
   color: #e93f78;
   margin-top: 10px;
 }
+
+.request {
+  &ErrorTxt {
+    color: #e93f78;
+    margin-bottom: 10px;
+  }
+  &SuccessTxt {
+    color: #00f0b6e5;
+    margin-bottom: 10px;
+  }
+  &ResendSuccessTxt {
+    color: #00f0b6e5;
+    margin-top: 10px;
+  }
+}

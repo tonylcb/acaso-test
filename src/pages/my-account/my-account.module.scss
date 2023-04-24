@@ -1,145 +1,139 @@
 @import "../../styles/mixins.scss";
 
 .mainContent {
-    display: flex;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: auto;
+  background-color: #000004;
+  border-radius: 20px;
+  padding: 50px 50px 35px 90px;
+
+  @include tablet {
+    max-width: initial;
+    flex-direction: column-reverse;
     align-items: center;
-    width: 100%;
-    justify-content: space-between;
-    max-width: 1200px;
-    margin: auto;
-    background-color: #000004;
-    border-radius: 20px;
-    padding: 50px 50px 35px 90px;
-
-    @include tablet {
-        max-width: initial;
-        flex-direction: column-reverse;
-        align-items: center;
-        padding: 0 0 90px 0;
-        margin: initial;
-    }
-}
-
-.link {
-    display: block;
-    max-width: 226px;
-    width: 100%;
+    padding: 0 0 90px 0;
+    margin: initial;
+  }
 }
 
 .userInfo {
-    &Container {
-        align-self: flex-start;
-        margin-top: 140px;
+  &Container {
+    align-self: flex-start;
+    margin-top: 140px;
 
-        @include tablet {
-            margin-top: 0;
-            align-self: initial;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-top: -20px;
-        }
+    button {
+      max-width: 226px;
     }
 
-    &Name {
-        display: flex;
-        flex-direction: column;
-        font-size: 4.3125rem;
-        font-weight: 300;
-        text-transform: uppercase;
-        font-style: italic;
+    @include tablet {
+      margin-top: 0;
+      align-self: initial;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: -20px;
+    }
+  }
 
-        @include tablet {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            font-size: 3.1875rem;
-        }
+  &Name {
+    display: flex;
+    flex-direction: column;
+    font-size: 4.3125rem;
+    font-weight: 300;
+    text-transform: uppercase;
+    font-style: italic;
 
+    @include tablet {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: 3.1875rem;
+    }
+  }
+
+  &FirstName {
+    font-weight: 700;
+  }
+
+  &FirstName {
+    font-weight: 700;
+  }
+
+  &Time {
+    font-weight: 500;
+    margin-top: 15px;
+    margin-bottom: 44px;
+    font-size: 1.25rem;
+
+    @include tablet {
+      font-size: 1.25rem;
+      margin-bottom: 60px;
+      text-align: center;
     }
 
-    &FirstName {
-        font-weight: 700;
+    span {
+      font-weight: 700;
     }
-
-    &FirstName {
-        font-weight: 700;
-    }
-
-    &Time {
-        font-weight: 500;
-        margin-top: 15px;
-        margin-bottom: 44px;
-        font-size: 1.25rem;
-
-        @include tablet {
-            font-size: 1.25rem;
-            margin-bottom: 60px;
-            text-align: center;
-        }
-
-        span {
-            font-weight: 700;
-        }
-
-    }
-
+  }
 }
 
 .userImage {
+  &Container {
+    position: relative;
+    & > svg {
+      width: 100%;
+      max-width: 709px;
+      height: auto;
+    }
+  }
+
+  &Profile {
     &Container {
-        position: relative;
-        &>svg {
-            width: 100%;
-            max-width: 709px;
-            height: auto;
-        }
+      position: absolute;
+      top: 50%;
+      right: 50%;
+      transform: translate(56%, -47%);
+      border-radius: 300px;
+      border: 13px solid #fff;
+      width: 100%;
+      max-width: 266px;
+      height: auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      object-fit: cover;
+
+      @include tablet {
+        max-width: 200px;
+        border: 8px solid #fff;
+      }
+
+      @include mobile {
+        max-width: 161px;
+      }
     }
+    &Image {
+      width: 100%;
+      max-width: 266px;
+      height: auto;
+      border-radius: 300px;
 
-    &Profile {
-        &Container {
-            position: absolute;
-            top: 50%;
-            right: 50%;
-            transform: translate(56%, -47%);
-            border-radius: 300px;
-            border: 13px solid #fff;
-            width: 100%;
-            max-width: 266px;
-            height: auto;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            object-fit: cover;
+      @include tablet {
+        max-width: 200px;
+      }
 
-            @include tablet {
-                max-width: 200px;
-                border: 8px solid #fff;
-            }
-
-            @include mobile {
-                max-width: 161px;
-            }
-        
-        }
-        &Image {
-            width: 100%;
-            max-width: 266px;
-            height: auto;
-            border-radius: 300px;
-
-            @include tablet {
-                max-width: 200px;
-            }
-
-            @include mobile {
-                max-width: 161px;
-            }
-        }
-        &Status {
-            position: absolute;
-            bottom: -15px;
-            right: 0;
-        }
+      @include mobile {
+        max-width: 161px;
+      }
     }
+    &Status {
+      position: absolute;
+      bottom: -15px;
+      right: 0;
+    }
+  }
 }

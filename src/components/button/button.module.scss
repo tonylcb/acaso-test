@@ -1,31 +1,37 @@
 @import "../../styles/mixins.scss";
 
 .generalButton {
-    width: 100%;
-    max-width: 328px;
-    height: 58px;
-    border: none;
-    background-color: rgba(255,255,255,.1);
-    font-weight: 700;
-    color: #fff;
-    border-radius: 100px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: 0.2s;
-    padding: 0 15px;
+  width: 100%;
+  max-width: 328px;
+  height: 58px;
+  border: none;
+  background-color: rgba(255, 255, 255, 0.1);
+  font-weight: 700;
+  color: #fff;
+  border-radius: 100px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: 0.2s;
+  padding: 0 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-    @include mobile {
-        font-size: 0.75rem;
-    }
+  @include mobile {
+    font-size: 0.75rem;
+  }
 }
 
 @include desktop-only {
-    .generalButton:hover {
-        transform: scale(1.05);
-    }
+  .generalButtonHover:hover {
+    transform: scale(1.05);
+  }
+}
+.generalDisabledButton {
+  filter: brightness(0.8);
 }
 
 .whiteBg {
-    background-color: #fff;
-    color: #000004;
+  background-color: #fff;
+  color: #000004;
 }

@@ -3,8 +3,8 @@ import LoginPage from "./pages/login/login"
 import RegisterPage from "./pages/register/register"
 import { ReactComponent as Ring } from "./assets/ring.svg"
 import style from "./styles/user-not-logged.module.scss"
-import { createBrowserRouter, RouterProvider } from "react-router-dom"
-import { UserProvider, UserContext } from "./contexts/UserContext"
+import { UserContext } from "./contexts/UserContext"
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 import { useContext } from 'react'
 
 import "@fontsource/raleway/300.css"
@@ -13,52 +13,49 @@ import "@fontsource/raleway/500.css"
 import "@fontsource/raleway/600.css"
 import "@fontsource/raleway/700.css"
 import "@fontsource/raleway/700-italic.css"
-import ConfirmEmailPage from "./pages/confirm-email/confirm-email"
+import ConfirmRegisterPage from "./pages/confirm-email/confirm-register"
 import MyAccountPage from "./pages/my-account/my-account"
-
-
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: (
-      <LoginPage />
-    )
-  },
-  {
-    path: "cadastro",
-    element: (
-      <RegisterPage />
-    )
-  },
-  {
-    path: "confirmar-email",
-    element: (
-      <ConfirmEmailPage />
-    )
-  },
-  {
-    path: "minha-conta",
-    element: (
-      <MyAccountPage />
-    )
-  }
-])
+import { useState, useEffect } from "react"
 
 function App() {
-  const { isUserLogged } = useContext(UserContext)
+  const { isUserLogged, changeUserStatus } = useContext(UserContext)
+  console.log('isUserLogged :>> ', isUserLogged);
+
+  useEffect(() => {
+    const checkStorage = localStorage.getItem("is_user_logged")
+    if (checkStorage === "true") {
+      changeUserStatus(true)
+    } else {
+      changeUserStatus(false)
+    }
+  }, [])
 
   return (
-    <UserProvider>
-      {!isUserLogged &&
+    <BrowserRouter>
+      {
+        !isUserLogged &&
         <Header />
       }
       <main className={`mainContainer ${isUserLogged && 'mainContainerUserLogged'}`}>
-        {!isUserLogged &&
+        {
+          !isUserLogged &&
           <Ring className={style.ring} />
         }
-        <RouterProvider router={router} />
+        <Routes>
+          {/* {
+            isUserLogged ?
+              <Route path='/minha-conta' element={<MyAccountPage />} /> :
+              <Route path='*' element={<Navigate to='/' replace />} />
+          } */}
+          <>
+            <Route path='/minha-conta' element={<MyAccountPage />} /> :
+            <Route path='/' element={<LoginPage />} />
+            <Route path='/cadastro' element={<RegisterPage />} />
+            <Route path='/confirmar-cadastro' element={<ConfirmRegisterPage />} />
+          </>
+        </Routes>
       </main>
-    </UserProvider>
+    </BrowserRouter>
   )
 }
 
