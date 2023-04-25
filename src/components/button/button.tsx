@@ -4,12 +4,13 @@ import { FC, ButtonHTMLAttributes } from "react"
 
 interface ButtonBaseProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     isLoading?: boolean;
-    text: string;
+    text?: string;
     isWhiteBg: boolean;
+    hasCountdown?: boolean;
 }
 
-
 const Button: FC<ButtonBaseProps> = ({ isLoading = false, text, isWhiteBg, ...props }) => {
+
     return (
         <button
             disabled={isLoading && true}

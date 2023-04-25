@@ -18,14 +18,14 @@ function LoginPage() {
         resolver: yupResolver(loginSchema)
     });
 
-    const { fetchLogin, isloading, requestError } = useContext(UserContext)
+    const { loginFetch, isloading, requestError } = useContext(UserContext)
 
 
     const onSubmit = async (loginData: LoginTypes) => {
         const isValid = await loginSchema.isValid(loginData)
 
         if (isValid) {
-            fetchLogin?.(loginData)
+            loginFetch?.(loginData)
         }
     };
 

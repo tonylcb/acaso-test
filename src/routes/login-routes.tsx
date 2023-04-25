@@ -11,8 +11,8 @@ const LoginRoutes = () => {
 
     const navigate = useNavigate()
     useEffect(() => {
-        const idToken = localStorage.getItem("id_token")
-        if (idToken) {
+        const userLogged = localStorage.getItem("is_user_logged")
+        if (userLogged) {
             navigate("/minha-conta")
         }
     })

@@ -3,18 +3,12 @@ import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 
 interface UserContextType {
-    isUserLogged?: boolean;
-    setIsUserLogged?: Dispatch<SetStateAction<boolean>>;
-    // currentFirstName?: string;
-    // setCurrentFirstName?: Dispatch<SetStateAction<string>>;
-    // currentLastName?: string;
-    // setCurrentLastName?: Dispatch<SetStateAction<string>>;
-    // currentUserEmail?: string;
-    // setCurrentUserEmail?: Dispatch<SetStateAction<string>>;
     isloading?: boolean;
     setIsLoading?: Dispatch<SetStateAction<boolean>>;
     requestError?: string;
     setRequestError?: Dispatch<SetStateAction<string>>;
+    requestResendError?: string;
+    setRequestResendError?: Dispatch<SetStateAction<string>>;
     successRequest?: boolean;
     setSuccessRequest?: Dispatch<SetStateAction<boolean>>;
     isResendloading?: boolean;
@@ -22,10 +16,16 @@ interface UserContextType {
     successResendRequest?: boolean;
     setSuccessResendRequest?: Dispatch<SetStateAction<boolean>>;
 
-    fetchLogin?: (userData: userDataType) => void;
-    signUpRequest?: (userData: userDataType) => void;
-    confirmSignUpRequest?: (userData: userDataType) => void;
-    resendCodeRequest?: () => void;
+    userFirstName?: string;
+    setUserFirstName?: Dispatch<SetStateAction<string>>;
+    userLastName?: string;
+    setUserLastName?: Dispatch<SetStateAction<string>>;
+
+    loginFetch?: (userData: userDataType) => void;
+    signUpFetch?: (userData: userDataType) => void;
+    confirmSignUpFetch?: (userData: userDataType) => void;
+    resendCodeFetch?: () => void;
+    getUserData?: () => void;
     userLogout?: () => void
 }
 
@@ -36,6 +36,14 @@ interface userDataType {
     password?: string;
     confirmPassword?: string;
     code?: string;
+
+    user?: {
+        first_name: string;
+        last_name: string;
+    };
+    token?: {
+        id_token: string;
+    };
 }
 
 const defaultUserState = {}
@@ -44,22 +52,24 @@ const UserContext = createContext<UserContextType>(defaultUserState);
 
 const UserProvider = ({ children }: { children: ReactNode }) => {
 
-    const [isUserLogged, setIsUserLogged] = useState<boolean>(false)
-    // const [currentFirstName, setCurrentFirstName] = useState<string>('')
-    // const [currentLastName, setCurrentLastName] = useState<string>('')
-    // const [currentUserEmail, setCurrentUserEmail] = useState<string>('')
-
     const [isloading, setIsLoading] = useState<boolean>(false)
     const [isResendloading, setIsResendLoading] = useState<boolean>(false)
     const [requestError, setRequestError] = useState<string>('')
+    const [requestResendError, setRequestResendError] = useState<string>('')
     const [successRequest, setSuccessRequest] = useState<boolean>(false)
     const [successResendRequest, setSuccessResendRequest] = useState<boolean>(false)
+
+    const [userFirstName, setUserFirstName] = useState<string>('')
+    const [userLastName, setUserLastName] = useState<string>('')
+
+    // const [userId, setUserId] = useState<string>('')
 
     const navigate = useNavigate();
 
     const baseURL = 'https://api.staging.aca.so'
 
-    const fetchLogin = async (userData: userDataType) => {
+    const loginFetch = async (userData: userDataType) => {
+        setRequestError('')
         setIsLoading(true)
         await axios.post(`${baseURL}/auth/login`,
             {
@@ -71,22 +81,24 @@ const UserProvider = ({ children }: { children: ReactNode }) => {
                     'Content-Type': 'application/json'
                 }
             }).then((response) => {
-                console.log('response :>> ', response);
+                console.log('response loginFetch :>> ', response);
+
                 setRequestError('')
-                localStorage.setItem("is_user_logged", "true")
+                localStorage.setItem("user_id", response.data.user.id)
                 localStorage.setItem("access_token", response.data.token.access_token)
                 localStorage.setItem("id_token", response.data.token.id_token)
                 localStorage.setItem("refresh_token", response.data.token.refresh_token)
 
+                getUserData()
                 setIsLoading(false)
+                setRequestError('')
 
-                navigate("/minha-conta")
-
-                // navigate("/minha-conta")
             }).catch((error) => {
                 console.log('error :>> ', error);
-                if (error.response.status === 400) {
+                if (error.response.data.message === "Incorrect username or password") {
                     setRequestError('E-mail ou senha incorreto')
+                } else if (error.response.data.message === "Email not registered") {
+                    setRequestError('E-mail não registrado')
                 } else {
                     setRequestError('Erro no servidor')
                 }
@@ -98,8 +110,9 @@ const UserProvider = ({ children }: { children: ReactNode }) => {
             })
     }
 
-    const signUpRequest = async (userData: userDataType) => {
+    const signUpFetch = async (userData: userDataType) => {
         setIsLoading(true)
+        setRequestError('')
         localStorage.setItem("email", userData.email as string)
 
         await axios.post(`${baseURL}/auth/sign-up`,
@@ -131,8 +144,10 @@ const UserProvider = ({ children }: { children: ReactNode }) => {
             })
     }
 
-    const resendCodeRequest = async () => {
+    const resendCodeFetch = async () => {
+        setRequestResendError('')
         setIsResendLoading(true)
+        setSuccessResendRequest(false)
         const userEmail = localStorage.getItem("email")
         await axios.post(`${baseURL}/auth/resend-confirmation-code`,
             {
@@ -143,24 +158,31 @@ const UserProvider = ({ children }: { children: ReactNode }) => {
                     'Content-Type': 'application/json'
                 }
             }).then((response) => {
-                setSuccessRequest(true)
+                setSuccessResendRequest(true)
+                setTimeout(() => {
+                    setSuccessResendRequest(false)
+                }, 4000)
 
-                console.log('responseEmail :>> ', response);
-                setRequestError('')
+                console.log('response resendCodeFetch :>> ', response);
+                setRequestResendError('')
                 navigate('/confirmar-cadastro')
-            }).catch((err) => {
-                console.log('err :>> ', err);
-                setRequestError('Erro no servidor')
+            }).catch((error) => {
+                console.log('error :>> ', error);
+                if (error.response.data.message === "Limit exceeded. Try again later") {
+                    setRequestResendError('Limite excedido, tente mais tarde')
+                }
+                setRequestResendError('Erro no servidor')
                 setIsResendLoading(false)
-
-                setSuccessRequest(false)
+                setSuccessResendRequest(false)
             }).finally(() => {
                 setIsResendLoading(false)
 
             })
     }
 
-    const confirmSignUpRequest = async (userData: userDataType) => {
+    const confirmSignUpFetch = async (userData: userDataType) => {
+        setRequestError('')
+        setSuccessRequest(false)
         const userEmail = localStorage.getItem("email")
         setIsLoading(true)
 
@@ -177,7 +199,7 @@ const UserProvider = ({ children }: { children: ReactNode }) => {
                 setSuccessRequest(true)
                 console.log('responseEmail :>> ', response);
                 setRequestError('')
-
+                localStorage.removeItem("email")
                 setTimeout(() => {
                     navigate("/")
                 }, 3000)
@@ -191,6 +213,67 @@ const UserProvider = ({ children }: { children: ReactNode }) => {
             })
     }
 
+    const createUserFetch = async (storedIdToken: string | null) => {
+        setRequestError('')
+        setIsLoading(true)
+
+        // const user = userData.user
+        await axios.post(`${baseURL}/user/`,
+            {
+
+            },
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${storedIdToken}`
+                }
+            }).then((response) => {
+                console.log('response createUserFetch :>> ', response);
+                navigate("/minha-conta")
+                localStorage.setItem("is_user_logged", "true")
+                setRequestError('')
+                setIsLoading(false)
+            }).catch((error) => {
+                console.log('error createUserFetch:>> ', error);
+                setIsLoading(false)
+                setSuccessRequest(false)
+            }).finally(() => {
+                setIsLoading(false)
+            })
+    }
+
+    const getUserData = async () => {
+        setIsLoading(true)
+        const storedUserId = localStorage.getItem("user_id")
+        const storedIdToken = localStorage.getItem("id_token")
+
+        axios.get(`${baseURL}/user/${storedUserId}`,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${storedIdToken}`
+                }
+            }
+        ).then((response) => {
+            console.log('response getUserData :>> ', response);
+            navigate("/minha-conta")
+            localStorage.setItem("is_user_logged", "true")
+
+            setUserFirstName(response.data.first_name)
+            setUserLastName(response.data.last_name)
+
+            setIsLoading(false)
+        }).catch((error) => {
+            console.log('error getUserData :>> ', error);
+            if (error.response.status === 404) {
+                createUserFetch(storedIdToken)
+            }
+            setIsLoading(false)
+        }).finally(() => {
+            setIsLoading(false)
+        })
+    }
+
     const userLogout = () => {
         localStorage.clear()
         navigate("/")
@@ -198,29 +281,21 @@ const UserProvider = ({ children }: { children: ReactNode }) => {
 
     return (
         <UserContext.Provider value={{
-            isUserLogged,
-            setIsUserLogged,
-            // currentUserEmail,
-            // setCurrentUserEmail,
-            // currentFirstName,
-            // setCurrentFirstName,
-            // currentLastName,
-            // setCurrentLastName,
             isloading,
-            setIsLoading,
             requestError,
-            setRequestError,
+            requestResendError,
             successRequest,
-            setSuccessRequest,
             isResendloading,
-            setIsResendLoading,
             successResendRequest,
-            setSuccessResendRequest,
 
-            fetchLogin,
-            signUpRequest,
-            confirmSignUpRequest,
-            resendCodeRequest,
+            userFirstName,
+            userLastName,
+
+            loginFetch,
+            signUpFetch,
+            confirmSignUpFetch,
+            resendCodeFetch,
+            getUserData,
             userLogout
         }}>
             {children}

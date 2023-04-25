@@ -21,14 +21,14 @@ const RegisterPage = () => {
         resolver: yupResolver(registerSchema)
     });
 
-    const { signUpRequest, isloading, successRequest, requestError } = useContext(UserContext)
+    const { signUpFetch, isloading, successRequest, requestError } = useContext(UserContext)
 
     // const navigate = useNavigate()
 
     const onSubmit = async (registerData: RegisterTypes) => {
         const isValid = await registerSchema.isValid(registerData)
         if (isValid) {
-            signUpRequest?.(registerData)
+            signUpFetch?.(registerData)
         }
     }
 

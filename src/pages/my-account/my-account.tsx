@@ -9,7 +9,6 @@ import { UserContext } from '../../contexts/UserContext'
 import { useNavigate } from 'react-router-dom'
 
 function MyAccountPage() {
-
     const { userLogout } = useContext(UserContext)
 
     const handleLogout = () => {
@@ -17,20 +16,24 @@ function MyAccountPage() {
     }
 
     const navigate = useNavigate()
+
+    const { getUserData, userFirstName, userLastName } = useContext(UserContext)
+
     useEffect(() => {
-        const idToken = localStorage.getItem("id_token")
-        if (idToken === null) {
+        const userLogged = localStorage.getItem("is_user_logged")
+        if (userLogged === null) {
             navigate("/")
         }
+        getUserData?.()
     }, [])
-    // if (!isUserLogged) return <Navigate to="/" />
+
 
     return (
         <main className={style.mainContainerUserLogged}>
 
             <section className={style.mainContent}>
                 <div className={style.userInfoContainer}>
-                    <h1 className={style.userInfoName}><span className={style.userInfoFirstName}>João </span>Carlos</h1>
+                    <h1 className={style.userInfoName}><span className={style.userInfoFirstName}>{userFirstName} </span>{userLastName}</h1>
                     <p className={style.userInfoTime}>Ativo há pelo menos <span>42 minutos</span></p>
 
                     <Button onClick={handleLogout} text="Sair de aca.so" isWhiteBg={true} />
@@ -45,7 +48,6 @@ function MyAccountPage() {
 
             </section>
         </main>
-
     )
 }
 export default MyAccountPage

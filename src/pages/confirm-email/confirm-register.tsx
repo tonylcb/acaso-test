@@ -1,12 +1,12 @@
 import { useContext } from 'react'
 import Button from '../../components/button/button'
+import CountdownButton from '../../components/button/countdownButton'
 import Fieldset from '../../components/fieldset/fieldset'
 import style from '../../styles/user-not-logged.module.scss'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup';
 import { confirmEmailSchema, ConfirmEmailFormDataTypes } from '../../validations/FormValidations'
 import { UserContext } from '../../contexts/UserContext'
-
 interface RegisterTypes {
     code: string,
 }
@@ -16,18 +16,14 @@ function ConfirmRegisterPage() {
         resolver: yupResolver(confirmEmailSchema)
     });
 
-    const { confirmSignUpRequest, resendCodeRequest, isloading, isResendloading, successRequest, successResendRequest, requestError } = useContext(UserContext)
+    const { confirmSignUpFetch, isloading, requestResendError, isResendloading, successRequest, successResendRequest, requestError } = useContext(UserContext)
 
     const onSubmit = async (registerData: RegisterTypes) => {
         const isValid = await confirmEmailSchema.isValid(registerData)
         if (isValid) {
-            confirmSignUpRequest?.(registerData)
+            confirmSignUpFetch?.(registerData)
         }
     };
-
-    const resendCode = () => {
-        resendCodeRequest?.()
-    }
 
     return (
         <div className={style.mainContentNotLogged}>
@@ -56,10 +52,14 @@ function ConfirmRegisterPage() {
                 <Button isLoading={isloading} type="submit" text="Confirmar e-mail" isWhiteBg={true} />
             </form>
             <span className={style.complementTextBttn}>Não recebeu o código?</span>
-            <Button isLoading={isResendloading} onClick={resendCode} text="Aguarde ... para reenviar" isWhiteBg={false} />
+            <CountdownButton isLoading={isResendloading} />
             {
                 successResendRequest &&
                 <p className={style.requestResendSuccessTxt}>Código reenviado!</p>
+            }
+            {
+                !successResendRequest && requestResendError !== '' &&
+                <p className={style.requestErrorTxt}>{requestResendError}</p>
             }
         </div>
     )
