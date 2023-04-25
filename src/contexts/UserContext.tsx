@@ -20,6 +20,9 @@ interface UserContextType {
     setUserFirstName?: Dispatch<SetStateAction<string>>;
     userLastName?: string;
     setUserLastName?: Dispatch<SetStateAction<string>>;
+    userLastAccess?: string;
+    setUserLastAccess?: Dispatch<SetStateAction<string>>;
+
 
     loginFetch?: (userData: userDataType) => void;
     signUpFetch?: (userData: userDataType) => void;
@@ -61,6 +64,7 @@ const UserProvider = ({ children }: { children: ReactNode }) => {
 
     const [userFirstName, setUserFirstName] = useState<string>('')
     const [userLastName, setUserLastName] = useState<string>('')
+    const [userLastAccess, setUserLastAccess] = useState<string>('')
 
     // const [userId, setUserId] = useState<string>('')
 
@@ -84,12 +88,14 @@ const UserProvider = ({ children }: { children: ReactNode }) => {
                 console.log('response loginFetch :>> ', response);
 
                 setRequestError('')
+                localStorage.setItem("is_user_logged", "true")
                 localStorage.setItem("user_id", response.data.user.id)
                 localStorage.setItem("access_token", response.data.token.access_token)
                 localStorage.setItem("id_token", response.data.token.id_token)
                 localStorage.setItem("refresh_token", response.data.token.refresh_token)
 
-                getUserData()
+                navigate("/minha-conta")
+                // getUserData()
                 setIsLoading(false)
                 setRequestError('')
 
@@ -230,7 +236,6 @@ const UserProvider = ({ children }: { children: ReactNode }) => {
             }).then((response) => {
                 console.log('response createUserFetch :>> ', response);
                 navigate("/minha-conta")
-                localStorage.setItem("is_user_logged", "true")
                 setRequestError('')
                 setIsLoading(false)
             }).catch((error) => {
@@ -256,11 +261,9 @@ const UserProvider = ({ children }: { children: ReactNode }) => {
             }
         ).then((response) => {
             console.log('response getUserData :>> ', response);
-            navigate("/minha-conta")
-            localStorage.setItem("is_user_logged", "true")
-
             setUserFirstName(response.data.first_name)
             setUserLastName(response.data.last_name)
+            setUserLastAccess(response.data.last_access_at)
 
             setIsLoading(false)
         }).catch((error) => {
@@ -290,6 +293,7 @@ const UserProvider = ({ children }: { children: ReactNode }) => {
 
             userFirstName,
             userLastName,
+            userLastAccess,
 
             loginFetch,
             signUpFetch,
