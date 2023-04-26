@@ -5,8 +5,7 @@ import { Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup';
 import { registerSchema, RegisterFormDataTypes } from '../../validations/FormValidations'
-import { useContext } from 'react'
-import { UserContext } from '../../contexts/UserContext'
+import SignUpRequest from '../../services/SignUpRequest'
 
 interface RegisterTypes {
     firstName: string,
@@ -21,14 +20,12 @@ const RegisterPage = () => {
         resolver: yupResolver(registerSchema)
     });
 
-    const { signUpFetch, isloading, successRequest, requestError } = useContext(UserContext)
-
-    // const navigate = useNavigate()
+    const { sendSignUpFetch, requestSignUpError, isSignUpLoading } = SignUpRequest()
 
     const onSubmit = async (registerData: RegisterTypes) => {
         const isValid = await registerSchema.isValid(registerData)
         if (isValid) {
-            signUpFetch?.(registerData)
+            sendSignUpFetch(registerData)
         }
     }
 
@@ -84,12 +81,12 @@ const RegisterPage = () => {
                     hasError={errors.confirmPassword ? true : false} errorText={errors.confirmPassword?.message}
                 />
 
-                {!successRequest && requestError !== '' &&
-                    <p className={style.requestErrorTxt}>{requestError}</p>
+                {requestSignUpError !== '' &&
+                    <p className={style.requestErrorTxt}>{requestSignUpError}</p>
                 }
 
                 <span className={style.complementTextBttn}>Não possui uma conta?</span>
-                <Button type="submit" isLoading={isloading} text="Criar minha conta aca.so" isWhiteBg={true} />
+                <Button type="submit" isLoading={isSignUpLoading} text="Criar minha conta aca.so" isWhiteBg={true} />
             </form>
             <Link className={`${style.link} ${style.linkBackToLogin}`} to="/">
                 <Button text="Voltar ao login" isWhiteBg={false} />

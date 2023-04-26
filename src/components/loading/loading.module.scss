@@ -19,6 +19,11 @@
   animation: ldsRing 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
   border-color: #1e1f2f transparent transparent transparent;
 }
+
+.ldsWhiteRing div {
+  border-color: #fff transparent transparent transparent;
+}
+
 .ldsRing div:nth-child(1) {
   animation-delay: -0.45s;
 }

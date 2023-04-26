@@ -7,7 +7,7 @@ import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup';
 import { loginSchema, LoginFormDataTypes } from '../../validations/FormValidations'
 import { UserContext } from '../../contexts/UserContext'
-
+import LoginRequest from '../../services/LoginRequest'
 interface LoginTypes {
     email: string,
     password: string,
@@ -18,17 +18,16 @@ function LoginPage() {
         resolver: yupResolver(loginSchema)
     });
 
-    const { loginFetch, isloading, requestError } = useContext(UserContext)
-
+    const { isLoginLoading, setRequestError } = useContext(UserContext)
+    const { sendLoginFetch, requestError } = LoginRequest()
 
     const onSubmit = async (loginData: LoginTypes) => {
         const isValid = await loginSchema.isValid(loginData)
 
         if (isValid) {
-            loginFetch?.(loginData)
+            sendLoginFetch(loginData)
         }
     };
-
 
     return (
         <div className={style.mainContentNotLogged}>
@@ -59,10 +58,10 @@ function LoginPage() {
                 {requestError !== '' &&
                     <p className={style.requestErrorTxt}>{requestError}</p>
                 }
-                <Button isLoading={isloading} type="submit" text="Entrar" isWhiteBg={true} />
+                <Button isLoading={isLoginLoading} type="submit" text="Entrar" isWhiteBg={true} />
             </form>
             <span className={style.complementTextBttn}>Não possui uma conta?</span>
-            <Link className={style.link} to="cadastro">
+            <Link className={style.link} to="cadastro" onClick={() => setRequestError?.('')}>
                 <Button text="Criar minha conta em aca.so" isWhiteBg={false} />
             </Link>
         </div>

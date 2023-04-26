@@ -1,7 +1,7 @@
 import { Route, Routes, useNavigate } from "react-router-dom"
 import Header from "../components/header/header"
-import RegisterPage from "../pages/register/register"
-import ConfirmRegisterPage from "../pages/confirm-email/confirm-register"
+import RegisterPage from "../pages/signup/signup"
+import ConfirmRegisterPage from "../pages/confirm-signup/confirm-signup"
 import LoginPage from "../pages/login/login"
 import style from "../styles/user-not-logged.module.scss"
 import { ReactComponent as Ring } from "../assets/ring.svg"
@@ -11,7 +11,7 @@ const LoginRoutes = () => {
 
     const navigate = useNavigate()
     useEffect(() => {
-        const userLogged = localStorage.getItem("is_user_logged")
+        const userLogged = localStorage.getItem("id_token")
         if (userLogged) {
             navigate("/minha-conta")
         }

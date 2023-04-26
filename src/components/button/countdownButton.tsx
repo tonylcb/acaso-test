@@ -1,7 +1,8 @@
-import { useContext, useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import Loading from "../loading/loading";
 import style from './button.module.scss'
-import { UserContext } from "../../contexts/UserContext";
+import generalStyle from '../../styles/user-not-logged.module.scss'
+import ResendCodeRequest from "../../services/ResendCodeRequest";
 
 const formatTime = (time: number) => {
     let minutes: number = Math.floor(time / 60)
@@ -13,16 +14,17 @@ const formatTime = (time: number) => {
     return minutes + ':' + seconds
 }
 
-const CountDownButton = ({ isLoading = false, ...props }) => {
-    const [countdown, setCountdown] = useState<number>(120)
+const CountDownButton = () => {
+    const [countdown, setCountdown] = useState<number>(5)
     const [endedCountdown, setEndedCountdown] = useState<boolean>(false)
     const timerId = useRef<number>()
 
-    const { resendCodeFetch } = useContext(UserContext)
+    const { sendResendCodeFetch, requestResendCodeError, isResendCodeLoading, successResendCodeRequest } = ResendCodeRequest()
+
 
     const resendCode = () => {
-        resendCodeFetch?.()
-        setCountdown(120)
+        sendResendCodeFetch()
+        setCountdown(5)
         setEndedCountdown(false)
     }
 
@@ -46,13 +48,20 @@ const CountDownButton = ({ isLoading = false, ...props }) => {
                 <button disabled className={`${style.generalButton}`} >Aguarde {formatTime(countdown)} para reenviar</button>
                 :
                 <button
-                    disabled={isLoading && true}
-                    className={`${!isLoading ? style.generalButtonHover : style.generalDisabledButton} ${style.generalButton}`}
-                    {...props}
+                    disabled={isResendCodeLoading && true}
+                    className={`${!isResendCodeLoading ? style.generalButtonHover : style.generalDisabledButton} ${style.generalButton}`}
                     onClick={resendCode}
                 >
-                    {isLoading ? <Loading /> : "Reenviar código"}
+                    {isResendCodeLoading ? <Loading /> : "Reenviar código"}
                 </button>
+            }
+            {
+                successResendCodeRequest &&
+                <p className={generalStyle.requestResendSuccessTxt}>Código reenviado!</p>
+            }
+            {
+                !successResendCodeRequest && requestResendCodeError !== '' &&
+                <p className={generalStyle.requestErrorTxt}>{requestResendCodeError}</p>
             }
         </>
     )

@@ -7,9 +7,10 @@ interface ButtonBaseProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     text?: string;
     isWhiteBg: boolean;
     hasCountdown?: boolean;
+    isWhiteLoading?: boolean
 }
 
-const Button: FC<ButtonBaseProps> = ({ isLoading = false, text, isWhiteBg, ...props }) => {
+const Button: FC<ButtonBaseProps> = ({ isLoading = false, text, isWhiteBg, isWhiteLoading, ...props }) => {
 
     return (
         <button
@@ -17,7 +18,7 @@ const Button: FC<ButtonBaseProps> = ({ isLoading = false, text, isWhiteBg, ...pr
             className={`${isWhiteBg && style.whiteBg} ${!isLoading ? style.generalButtonHover : style.generalDisabledButton} ${style.generalButton}`}
             {...props}
         >
-            {isLoading ? <Loading /> : text}
+            {isLoading ? <Loading isWhite={isWhiteLoading} /> : text}
         </button>
     )
 }

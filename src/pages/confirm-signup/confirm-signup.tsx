@@ -1,4 +1,3 @@
-import { useContext } from 'react'
 import Button from '../../components/button/button'
 import CountdownButton from '../../components/button/countdownButton'
 import Fieldset from '../../components/fieldset/fieldset'
@@ -6,7 +5,7 @@ import style from '../../styles/user-not-logged.module.scss'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup';
 import { confirmEmailSchema, ConfirmEmailFormDataTypes } from '../../validations/FormValidations'
-import { UserContext } from '../../contexts/UserContext'
+import ConfirmSignUpRequest from '../../services/ConfirmSignUpRequest'
 interface RegisterTypes {
     code: string,
 }
@@ -16,12 +15,15 @@ function ConfirmRegisterPage() {
         resolver: yupResolver(confirmEmailSchema)
     });
 
-    const { confirmSignUpFetch, isloading, requestResendError, isResendloading, successRequest, successResendRequest, requestError } = useContext(UserContext)
+    const { sendSignUpFConfirmetch,
+        successConfirmSignUpRequest,
+        requestConfirmSignUpError,
+        isConfirmSignUpLoading } = ConfirmSignUpRequest()
 
     const onSubmit = async (registerData: RegisterTypes) => {
         const isValid = await confirmEmailSchema.isValid(registerData)
         if (isValid) {
-            confirmSignUpFetch?.(registerData)
+            sendSignUpFConfirmetch(registerData)
         }
     };
 
@@ -42,25 +44,17 @@ function ConfirmRegisterPage() {
                     hasError={errors.code ? true : false}
                     errorText={errors.code?.message}
                 />
-                {!successRequest && requestError !== '' &&
-                    <p className={style.requestErrorTxt}>{requestError}</p>
+                {!successConfirmSignUpRequest && requestConfirmSignUpError !== '' &&
+                    <p className={style.requestErrorTxt}>{requestConfirmSignUpError}</p>
                 }
                 {
-                    successRequest &&
+                    successConfirmSignUpRequest &&
                     <p className={style.requestSuccessTxt}>Cadastro realizado com sucesso!</p>
                 }
-                <Button isLoading={isloading} type="submit" text="Confirmar e-mail" isWhiteBg={true} />
+                <Button isLoading={isConfirmSignUpLoading} type="submit" text="Confirmar e-mail" isWhiteBg={true} />
             </form>
             <span className={style.complementTextBttn}>Não recebeu o código?</span>
-            <CountdownButton isLoading={isResendloading} />
-            {
-                successResendRequest &&
-                <p className={style.requestResendSuccessTxt}>Código reenviado!</p>
-            }
-            {
-                !successResendRequest && requestResendError !== '' &&
-                <p className={style.requestErrorTxt}>{requestResendError}</p>
-            }
+            <CountdownButton />
         </div>
     )
 }
