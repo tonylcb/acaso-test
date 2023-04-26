@@ -72,8 +72,10 @@ const GetUserData = () => {
                 }
             }).then(() => {
                 request()
-            }).catch(() => {
-                setErrorMsg("Erro ao criar um usuário, faça login novamente!")
+            }).catch((error) => {
+                if (error.response.status !== 500) {
+                    setErrorMsg("Erro ao criar um usuário, faça login novamente!")
+                }
                 setIsLoading(false)
             }).finally(() => {
                 setIsLoading(false)
