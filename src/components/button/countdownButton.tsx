@@ -15,7 +15,7 @@ const formatTime = (time: number) => {
 }
 
 const CountDownButton = () => {
-    const [countdown, setCountdown] = useState<number>(5)
+    const [countdown, setCountdown] = useState<number>(120)
     const [endedCountdown, setEndedCountdown] = useState<boolean>(false)
     const timerId = useRef<number>()
 
@@ -24,7 +24,7 @@ const CountDownButton = () => {
 
     const resendCode = () => {
         sendResendCodeFetch()
-        setCountdown(5)
+        setCountdown(120)
         setEndedCountdown(false)
     }
 
