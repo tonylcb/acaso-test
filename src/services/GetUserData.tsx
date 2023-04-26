@@ -1,29 +1,18 @@
-import { useContext, useEffect, useState } from "react"
+import { useContext, useState } from "react"
 import axios from 'axios'
 import { UserContext } from "../contexts/UserContext"
 
-interface userDataTypes {
-    first_name?: string;
-    last_name?: string;
-    last_access_at?: string;
-}
+const GetUserData = () => {
+    const { setUserFirstName, setUserLastName, setIsLoginLoading } = useContext(UserContext)
 
-const GetUserData = (loadOnStart = false) => {
-
-    const { createUserFetch, setIsCreateUserLoading, setUserFirstName, setUserLastName } = useContext(UserContext)
-
-
-    const [userData, setUserData] = useState<userDataTypes>()
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [errorMsg, setErrorMsg] = useState<string>('')
 
-
     const baseURL = 'https://api.staging.aca.so'
 
-    useEffect(() => {
-        if (loadOnStart) sendRequest();
-        else setIsLoading(false)
-    }, [])
+    // useEffect(() => {
+    //     if (loadOnStart) sendRequest();
+    // }, [])
 
     const request = () => {
         sendRequest();
@@ -31,7 +20,7 @@ const GetUserData = (loadOnStart = false) => {
 
     const sendRequest = () => {
         setIsLoading(true)
-        setIsCreateUserLoading?.(true)
+        setIsLoginLoading?.(true)
 
         const storedUserId = localStorage.getItem("user_id")
         const storedIdToken = localStorage.getItem("id_token")
@@ -45,35 +34,50 @@ const GetUserData = (loadOnStart = false) => {
                 }
             }
         ).then((response) => {
-            console.log('response GetUserData :>> ', response);
-            setIsLoading(false)
-            setIsCreateUserLoading?.(false)
-
             setUserFirstName?.(response.data.first_name)
             setUserLastName?.(response.data.last_name)
             if (!isUserLoggedToken) {
                 localStorage.setItem("last_access_at", response.data.last_access_at)
                 localStorage.setItem("is_user_logged", "true")
-
-
-                setUserData(response.data)
-            } else {
-                setUserData(response.data)
             }
+            setIsLoading(false)
+            setIsLoginLoading?.(false)
+
         }).catch((error) => {
-            console.log('error getUserData :>> ', error);
             if (error.response.status === 404) {
-                createUserFetch?.(storedIdToken)
+                sendCreateUserFetch(storedIdToken)
+                setIsLoginLoading?.(false)
             } else if (error.response.status === 403) {
                 refreshTokenRequest()
             } else {
                 setErrorMsg("Erro ao acessar os dados do usuário")
                 setIsLoading(false)
-                setIsCreateUserLoading?.(false)
+                setIsLoginLoading?.(false)
             }
         }).finally(() => [
-            setIsLoading(false)
+            setIsLoginLoading?.(false)
         ])
+    }
+
+    const sendCreateUserFetch = async (storedIdToken: string | null) => {
+        setIsLoading(true)
+        await axios.post('https://api.staging.aca.so/user/',
+            {
+
+            },
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${storedIdToken}`
+                }
+            }).then(() => {
+                request()
+            }).catch(() => {
+                setErrorMsg("Erro ao criar um usuário, faça login novamente!")
+                setIsLoading(false)
+            }).finally(() => {
+                setIsLoading(false)
+            })
     }
 
     const refreshTokenRequest = () => {
@@ -93,22 +97,16 @@ const GetUserData = (loadOnStart = false) => {
                 }
             }
         ).then((response) => {
-            console.log('response refreshTokenRequest :>> ', response);
-            setIsLoading(false)
-
             localStorage.setItem('id_token', response.data.id_token)
             localStorage.setItem('access_token', response.data.access_token)
             sendRequest()
-        }).catch((error) => {
-            console.log('error refreshTokenRequest :>> ', error);
+        }).catch(() => {
             setErrorMsg("Erro ao acessar os dados do usuário")
-            setIsLoading(false)
-        }).finally(() => {
             setIsLoading(false)
         })
     }
 
-    return { userData, request, isLoading, errorMsg }
+    return { request, isLoading, errorMsg }
 }
 
 export default GetUserData

@@ -31,9 +31,8 @@ const SignUpRequest = () => {
                 setRequestSignUpError('')
                 navigate("/confirmar-cadastro")
                 setIsSignUpLoading(false)
-            }).catch((err) => {
-                console.log('err :>> ', err);
-                if (err.response.status === 400) {
+            }).catch((error) => {
+                if (error.response.status === 400) {
                     setRequestSignUpError('E-mail já cadastrado!')
                 } else {
                     setRequestSignUpError('Erro no servidor')

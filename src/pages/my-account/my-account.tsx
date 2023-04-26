@@ -4,7 +4,7 @@ import style from './my-account.module.scss'
 import { ReactComponent as ImageBackground } from "../../assets/image-background.svg"
 import { ReactComponent as StatusProfile } from "../../assets/status-profile.svg"
 import ProfileImageUrl from "../../assets/profile-image.png"
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect } from 'react'
 import { UserContext } from '../../contexts/UserContext'
 import { useNavigate } from 'react-router-dom'
 import dayjs from 'dayjs'
@@ -16,11 +16,10 @@ function MyAccountPage() {
     dayjs.extend(relativeTime)
     dayjs.extend(utc)
 
-    const { userLogout, isCreateUserLoading, requestError, userFirstName, userLastName } = useContext(UserContext)
-    const { userData, request, isLoading, errorMsg } = getUserData(false)
+    const { userLogout, isLoginLoading, requestError, userFirstName, userLastName } = useContext(UserContext)
+    const { request, isLoading, errorMsg } = getUserData()
 
 
-    console.log('userData :>> ', userData);
     const handleLogout = () => {
         userLogout?.()
     }
@@ -81,10 +80,17 @@ function MyAccountPage() {
             <section className={style.mainContent}>
                 <div className={style.userInfoContainer}>
                     {
-                        isLoading || isCreateUserLoading &&
-                        <p className={style.userInfoTime}>
-                            Carregando dados...
-                        </p>
+                        isLoading || isLoginLoading ?
+                            <p className={style.userInfoTime}>
+                                Carregando dados...
+                            </p> :
+                            <>
+                                <h1 className={style.userInfoName}><span className={style.userInfoFirstName}>{userFirstName
+                                }</span>{userLastName}</h1>
+                                <p className={style.userInfoTime}>
+                                    {handleUserActiveTime()}
+                                </p>
+                            </>
                     }
                     {
                         errorMsg !== '' &&
@@ -97,16 +103,6 @@ function MyAccountPage() {
                         <p className={style.userInfoTime}>
                             {requestError}
                         </p>
-                    }
-                    {
-                        errorMsg === '' && !isLoading && !isCreateUserLoading &&
-                        <>
-                            <h1 className={style.userInfoName}><span className={style.userInfoFirstName}>{userFirstName
-                            }</span>{userLastName}</h1>
-                            <p className={style.userInfoTime}>
-                                {handleUserActiveTime()}
-                            </p>
-                        </>
                     }
                     <Button onClick={handleLogout} text="Sair de aca.so" isWhiteBg={true} />
                 </div>

@@ -24,17 +24,15 @@ const ResendCodeRequest = () => {
                 headers: {
                     'Content-Type': 'application/json'
                 }
-            }).then((response) => {
+            }).then(() => {
                 setSuccessResendCodeRequest(true)
                 setTimeout(() => {
                     setSuccessResendCodeRequest(false)
                 }, 4000)
 
-                console.log('response resendCodeFetch :>> ', response);
                 setRequestResendCodeError('')
                 navigate('/confirmar-cadastro')
             }).catch((error) => {
-                console.log('error :>> ', error);
                 if (error.response.data.message === "Limit exceeded. Try again later") {
                     setRequestResendCodeError('Limite excedido, tente mais tarde')
                 } else {

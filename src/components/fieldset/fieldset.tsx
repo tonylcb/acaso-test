@@ -15,7 +15,6 @@ interface FieldsetBaseProps extends InputHTMLAttributes<HTMLInputElement> {
 
 const Fieldset: FC<FieldsetBaseProps> = ({ id, label, type, placeholder, register, hasError, errorText, rules, ...props }) => {
 
-    // console.log('typeof(register) :>> ', typeof (register));
     const [inputPasswordType, setInputPasswordType] = useState('password')
 
     function changeInputType() {

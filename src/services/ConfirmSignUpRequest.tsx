@@ -27,17 +27,15 @@ const ConfirmSignUpRequest = () => {
                 headers: {
                     'Content-Type': 'application/json'
                 }
-            }).then((response) => {
+            }).then(() => {
                 setConfirmSignUpRequest(true)
-                console.log('responseEmail :>> ', response);
                 setRequestConfirmSignUpError('')
                 localStorage.removeItem("email")
                 setTimeout(() => {
                     navigate("/")
                 }, 1000)
-            }).catch((err) => {
-                console.log('err :>> ', err);
-                if (err.response.status === 400) {
+            }).catch((error) => {
+                if (error.response.status === 400) {
                     setRequestConfirmSignUpError('Código incorreto')
                 } else {
                     setRequestConfirmSignUpError('Erro no servidor')

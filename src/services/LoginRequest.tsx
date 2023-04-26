@@ -25,23 +25,16 @@ const LoginRequest = () => {
                     'Content-Type': 'application/json'
                 }
             }).then((response) => {
-                console.log('response loginFetch :>> ', response);
-
                 setLoginRequestError('')
                 localStorage.setItem("user_id", response.data.user.id)
                 localStorage.setItem("access_token", response.data.token.access_token)
                 localStorage.setItem("id_token", response.data.token.id_token)
                 localStorage.setItem("refresh_token", response.data.token.refresh_token)
 
-                // setUserFirstName(response.data.user.first_name)
-                // setUserLastName(response.data.user.last_name)
-
                 navigate("/minha-conta")
-                setIsLoginLoading?.(false)
                 setLoginRequestError('')
 
             }).catch((error) => {
-                console.log('error :>> ', error);
                 if (error.response.data.message === "Incorrect username or password") {
                     setLoginRequestError('E-mail ou senha incorreto')
                 } else if (error.response.data.message === "Email not registered") {
@@ -49,10 +42,6 @@ const LoginRequest = () => {
                 } else {
                     setLoginRequestError('Erro no servidor')
                 }
-                setIsLoginLoading?.(false)
-
-
-            }).finally(() => {
                 setIsLoginLoading?.(false)
             })
     }
