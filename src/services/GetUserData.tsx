@@ -103,7 +103,7 @@ const GetUserData = () => {
             localStorage.setItem('access_token', response.data.access_token)
             sendRequest()
         }).catch(() => {
-            setErrorMsg("Erro ao acessar os dados do usuário")
+            setErrorMsg("Ops! Algo deu errado, faça login novamente!")
             setIsLoading(false)
         })
     }
